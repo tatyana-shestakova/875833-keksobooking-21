@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Татьяна Шестакова](https://up.htmlacademy.ru/javascript/21/user/875833).
-* Наставник: `Неизвестно`.
+* Наставник: [Максим Деев](https://htmlacademy.ru/profile/id685777).
 
 ---
 
