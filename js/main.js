@@ -128,78 +128,78 @@ const renderPin = (pins) => {
   }
 };
 
-  // Неактивное состояние страницы
+// Неактивное состояние страницы
 
-  const map = document.querySelector(".map");
-  const form = document.querySelector(".ad-form");
-  const fieldsets = form.querySelectorAll("fieldset");
-  const mapPin = document.querySelector(".map__pin--main");
-  let check = true;
+const map = document.querySelector(".map");
+const form = document.querySelector(".ad-form");
+const fieldsets = form.querySelectorAll("fieldset");
+const mapPin = document.querySelector(".map__pin--main");
+let check = true;
 
-  const PIN_ANGLE_HEIGHT = 22;
-  const addressInput = form.querySelector("input[name='address']");
-  const getAddress = (input, element, angleHeight) => {
-    if (check) {
-      input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight / 2));
-    } else {
-      input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight + angleHeight));
+const PIN_ANGLE_HEIGHT = 22;
+const addressInput = form.querySelector("input[name='address']");
+const getAddress = (input, element, angleHeight) => {
+  if (check) {
+    input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight / 2));
+  } else {
+    input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight + angleHeight));
+  }
+};
+
+const disabledInput = () => {
+  if (check) {
+    for (let fieldset of fieldsets) {
+      fieldset.setAttribute("disabled", "true");
     }
-  };
-
-  const disabledInput = () => {
-    if (check) {
-      for (let fieldset of fieldsets) {
-        fieldset.setAttribute("disabled", "true");
-      }
-    } else {
-      for (let fieldset of fieldsets) {
-        fieldset.removeAttribute("disabled", "true");
-      }
+  } else {
+    for (let fieldset of fieldsets) {
+      fieldset.removeAttribute("disabled", "true");
     }
-  };
+  }
+};
 
-  const activateMap = () => {
-    map.classList.remove("map--faded");
-    form.classList.remove("ad-form--disabled");
-    disabledInput();
-    getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
-    renderPin(renderData(flats));
-  };
+const activateMap = () => {
+  map.classList.remove("map--faded");
+  form.classList.remove("ad-form--disabled");
+  disabledInput();
+  getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
+  renderPin(renderData(flats));
+};
 
-  const enterKeydownHandler = (evt) => {
-    if (evt.keyCode === 13) {
-      activateMap();
-      if (!map.classList.contains("map--faded")) {
-        deliteListener();
-      }
+const enterKeydownHandler = (evt) => {
+  if (evt.keyCode === 13) {
+    activateMap();
+    if (!map.classList.contains("map--faded")) {
+      deliteListener();
     }
-  };
+  }
+};
 
-  const leftClickHandler = (evt) => {
-    if (evt.which === 1) {
-      activateMap();
-      if (!map.classList.contains("map--faded")) {
-        deliteListener();
-      }
+const leftClickHandler = (evt) => {
+  if (evt.which === 1) {
+    activateMap();
+    if (!map.classList.contains("map--faded")) {
+      deliteListener();
     }
-  };
+  }
+};
 
-  const deliteListener = () => {
-    mapPin.removeEventListener("keydown", enterKeydownHandler);
-    mapPin.removeEventListener("mousedown", leftClickHandler);
-  };
+const deliteListener = () => {
+  mapPin.removeEventListener("keydown", enterKeydownHandler);
+  mapPin.removeEventListener("mousedown", leftClickHandler);
+};
 
-  const addActiveMap = () => {
-    disabledInput();
-    getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
-    if (map.classList.contains("map--faded")) {
-      check = false;
-      mapPin.addEventListener("keydown", enterKeydownHandler);
-      mapPin.addEventListener("mousedown", leftClickHandler);
-    }
-  };
+const addActiveMap = () => {
+  disabledInput();
+  getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
+  if (map.classList.contains("map--faded")) {
+    check = false;
+    mapPin.addEventListener("keydown", enterKeydownHandler);
+    mapPin.addEventListener("mousedown", leftClickHandler);
+  }
+};
 
-  addActiveMap();
+addActiveMap();
 
 
 // Валидация формы
