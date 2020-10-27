@@ -97,7 +97,7 @@ roomsNumber.addEventListener("change", function () {
   } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) !== 0) {
     roomsNumber.setCustomValidity("Это помещение не для гостей!");
   } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
-    roomsNumber.setCustomValidity("Выберете помещение с 100 комнат");
+    roomsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
   } else {
     roomsNumber.setCustomValidity("");
   }
