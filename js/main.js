@@ -1,5 +1,7 @@
 "use strict";
 
+// Отрисовка карточек
+
 const TYPE_FLAT = ["palace", "flat", "house", "bungalow"];
 const TYPE_FLAT_DESCRIPTION = {
   palace: "Дворец",
@@ -19,10 +21,6 @@ const sreenWidth = similarAdsList.clientWidth;
 const adsTemplate = document.querySelector("#pin").content.querySelector(".map__pin");
 const cardTemplate = document.querySelector("#card").content.querySelector(".map__card");
 let flats = [];
-
-
-const map = document.querySelector(".map");
-map.classList.remove("map--faded");
 
 const getRandomNumber = (min, max) => {
   let number = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -130,4 +128,138 @@ const renderPin = (pins) => {
   }
 };
 
-renderPin(renderData(flats));
+// Неактивное состояние страницы
+
+const map = document.querySelector(".map");
+const form = document.querySelector(".ad-form");
+const fieldsets = form.querySelectorAll("fieldset");
+const mapPin = document.querySelector(".map__pin--main");
+let check = true;
+
+const PIN_ANGLE_HEIGHT = 22;
+const addressInput = form.querySelector("input[name='address']");
+const getAddress = (input, element, angleHeight) => {
+  if (check) {
+    input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight / 2));
+  } else {
+    input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight + angleHeight));
+  }
+};
+
+const disabledInput = () => {
+  if (check) {
+    for (let fieldset of fieldsets) {
+      fieldset.setAttribute("disabled", "true");
+    }
+  } else {
+    for (let fieldset of fieldsets) {
+      fieldset.removeAttribute("disabled", "true");
+    }
+  }
+};
+
+const activateMap = () => {
+  map.classList.remove("map--faded");
+  form.classList.remove("ad-form--disabled");
+  disabledInput();
+  getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
+  renderPin(renderData(flats));
+};
+
+const enterKeydownHandler = (evt) => {
+  if (evt.keyCode === 13) {
+    activateMap();
+    if (!map.classList.contains("map--faded")) {
+      deliteListener();
+    }
+  }
+};
+
+const leftClickHandler = (evt) => {
+  if (evt.which === 1) {
+    activateMap();
+    if (!map.classList.contains("map--faded")) {
+      deliteListener();
+    }
+  }
+};
+
+const deliteListener = () => {
+  mapPin.removeEventListener("keydown", enterKeydownHandler);
+  mapPin.removeEventListener("mousedown", leftClickHandler);
+};
+
+const addActiveMap = () => {
+  disabledInput();
+  getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
+  if (map.classList.contains("map--faded")) {
+    check = false;
+    mapPin.addEventListener("keydown", enterKeydownHandler);
+    mapPin.addEventListener("mousedown", leftClickHandler);
+  }
+};
+
+addActiveMap();
+
+
+// Валидация формы
+const timeinSelect = form.querySelector("#timein");
+const timeoutSelect = form.querySelector("#timeout");
+
+timeinSelect.addEventListener("change", function () {
+  if (timeinSelect.value !== timeoutSelect.value) {
+    timeoutSelect.value = timeinSelect.value;
+  }
+});
+
+timeoutSelect.addEventListener("change", function () {
+  if (timeoutSelect.value !== timeinSelect.value) {
+    timeinSelect.value = timeoutSelect.value;
+  }
+});
+
+const roomsNumber = form.querySelector("#room_number");
+const guestsNumber = form.querySelector("#capacity");
+
+roomsNumber.addEventListener("change", function () {
+  if (Number(roomsNumber.value) < Number(guestsNumber.value)) {
+    roomsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
+  } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) !== 0) {
+    roomsNumber.setCustomValidity("Это помещение не для гостей!");
+  } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
+    roomsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
+  } else {
+    roomsNumber.setCustomValidity("");
+  }
+  roomsNumber.reportValidity();
+});
+
+guestsNumber.addEventListener("change", function () {
+  if (Number(guestsNumber.value) > Number(roomsNumber.value)) {
+    guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
+  } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
+    guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
+  } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) !== 0) {
+    guestsNumber.setCustomValidity("Выберете пункт «не для гостей»");
+  } else {
+    guestsNumber.setCustomValidity("");
+  }
+  guestsNumber.reportValidity();
+});
+
+const typeSelect = form.querySelector("#type");
+const costInput = form.querySelector("#price");
+
+costInput.min = "1000";
+
+typeSelect.addEventListener("change", function () {
+  if (typeSelect.value === "bungalow") {
+    costInput.min = "0";
+  } else if (typeSelect.value === "flat") {
+    costInput.min = "1000";
+  } else if (typeSelect.value === "house") {
+    costInput.min = "5000";
+  } else if (typeSelect.value === "palace") {
+    costInput.min = "10000";
+  }
+});
