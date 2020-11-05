@@ -114,8 +114,10 @@ const renderCards = (template) => {
   }
 
   cardAvatar.src = template.author.avatar;
+  cardElement.classList.add("hidden");
   return cardElement;
 };
+
 
 const renderPin = (pins) => {
   let adsFragment = document.createDocumentFragment();
@@ -126,7 +128,67 @@ const renderPin = (pins) => {
     similarAdsList.appendChild(adsFragment);
     similarCardList.insertBefore(cardFragment, filtersContainer);
   }
+  addLisnenerCards();
 };
+
+
+// События для карточек объявлений
+
+let change;
+
+const escKeydownHandler = (evt) => {
+  if (evt.keyCode === 27) {
+    closePopup();
+  }
+};
+
+const openPopup = () => {
+  change.classList.remove("hidden");
+  document.addEventListener("keydown", escKeydownHandler);
+};
+
+const closePopup = () => {
+  change.classList.add("hidden");
+  document.removeEventListener("keydown", escKeydownHandler);
+};
+
+const hiddenAllPopups = (popups) => {
+  for (let popup of popups) {
+    popup.classList.add("hidden");
+  }
+};
+
+const addLisnenerCards = () => {
+  const allPopups = document.querySelectorAll(".popup");
+  const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
+  const closePopups = document.querySelectorAll(".popup__close");
+  for (let i = 0; i < allPins.length; i++) {
+    allPins[i].addEventListener("click", function () {
+      change = allPopups[i];
+      hiddenAllPopups(allPopups);
+      openPopup();
+    });
+
+    allPins[i].addEventListener("keydown", function (evt) {
+      if (evt.keyCode === 13) {
+        change = allPopups[i];
+        hiddenAllPopups(allPopups);
+        openPopup();
+      }
+    });
+
+    closePopups[i].addEventListener("click", function () {
+      closePopup();
+    });
+
+    closePopups[i].addEventListener("keydown", function (evt) {
+      if (evt.keyCode === 13) {
+        closePopup();
+      }
+    });
+  }
+};
+
 
 // Неактивное состояние страницы
 
