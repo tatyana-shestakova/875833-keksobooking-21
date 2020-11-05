@@ -96,11 +96,11 @@ const renderCards = (template) => {
   cardType.textContent = TYPE_FLAT_DESCRIPTION[template.offer.type];
   cardRoom.textContent = template.offer.rooms + " комнаты для " + template.offer.guests + " гостей.";
   cardTime.textContent = "Заезд после " + template.offer.checkin + ", выезд до " + template.offer.checkout + ".";
-  for (let i = 0; i < cardFeaturesItem.length; i++) {
-    if (!cardFeaturesItem[i].classList.contains("popup__feature--" + template.offer.features[i])) {
-      cardFeaturesItem[i].remove();
+  cardFeaturesItem.forEach(function (value, index) {
+    if (!value.classList.contains("popup__feature--" + template.offer.features[index])) {
+      value.remove();
     }
-  }
+  });
   cardDescription.textContent = template.offer.description;
   cardImage.src = template.offer.photos[0];
   if (template.offer.photos.length > 1) {
@@ -162,31 +162,31 @@ const addLisnenerCards = () => {
   const allPopups = document.querySelectorAll(".popup");
   const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
   const closePopups = document.querySelectorAll(".popup__close");
-  for (let i = 0; i < allPins.length; i++) {
-    allPins[i].addEventListener("click", function () {
-      change = allPopups[i];
+  allPopups.forEach(function (value, index) {
+    allPins[index].addEventListener("click", function () {
+      change = value;
       hiddenAllPopups(allPopups);
       openPopup();
     });
 
-    allPins[i].addEventListener("keydown", function (evt) {
+    allPins[index].addEventListener("keydown", function (evt) {
       if (evt.keyCode === 13) {
-        change = allPopups[i];
+        change = value;
         hiddenAllPopups(allPopups);
         openPopup();
       }
     });
 
-    closePopups[i].addEventListener("click", function () {
+    closePopups[index].addEventListener("click", function () {
       closePopup();
     });
 
-    closePopups[i].addEventListener("keydown", function (evt) {
+    closePopups[index].addEventListener("keydown", function (evt) {
       if (evt.keyCode === 13) {
         closePopup();
       }
     });
-  }
+  });
 };
 
 
