@@ -96,11 +96,11 @@ const renderCards = (template) => {
   cardType.textContent = TYPE_FLAT_DESCRIPTION[template.offer.type];
   cardRoom.textContent = template.offer.rooms + " комнаты для " + template.offer.guests + " гостей.";
   cardTime.textContent = "Заезд после " + template.offer.checkin + ", выезд до " + template.offer.checkout + ".";
-  for (let i = 0; i < cardFeaturesItem.length; i++) {
-    if (!cardFeaturesItem[i].classList.contains("popup__feature--" + template.offer.features[i])) {
-      cardFeaturesItem[i].remove();
+  cardFeaturesItem.forEach(function (value, index) {
+    if (!value.classList.contains("popup__feature--" + template.offer.features[index])) {
+      value.remove();
     }
-  }
+  });
   cardDescription.textContent = template.offer.description;
   cardImage.src = template.offer.photos[0];
   if (template.offer.photos.length > 1) {
@@ -114,8 +114,10 @@ const renderCards = (template) => {
   }
 
   cardAvatar.src = template.author.avatar;
+  cardElement.classList.add("hidden");
   return cardElement;
 };
+
 
 const renderPin = (pins) => {
   let adsFragment = document.createDocumentFragment();
@@ -126,7 +128,67 @@ const renderPin = (pins) => {
     similarAdsList.appendChild(adsFragment);
     similarCardList.insertBefore(cardFragment, filtersContainer);
   }
+  addLisnenerCards();
 };
+
+
+// События для карточек объявлений
+
+let change;
+
+const escKeydownHandler = (evt) => {
+  if (evt.keyCode === 27) {
+    closePopup();
+  }
+};
+
+const openPopup = () => {
+  change.classList.remove("hidden");
+  document.addEventListener("keydown", escKeydownHandler);
+};
+
+const closePopup = () => {
+  change.classList.add("hidden");
+  document.removeEventListener("keydown", escKeydownHandler);
+};
+
+const hiddenAllPopups = (popups) => {
+  for (let popup of popups) {
+    popup.classList.add("hidden");
+  }
+};
+
+const addLisnenerCards = () => {
+  const allPopups = document.querySelectorAll(".popup");
+  const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
+  const closePopups = document.querySelectorAll(".popup__close");
+  allPopups.forEach(function (value, index) {
+    allPins[index].addEventListener("click", function () {
+      change = value;
+      hiddenAllPopups(allPopups);
+      openPopup();
+    });
+
+    allPins[index].addEventListener("keydown", function (evt) {
+      if (evt.keyCode === 13) {
+        change = value;
+        hiddenAllPopups(allPopups);
+        openPopup();
+      }
+    });
+
+    closePopups[index].addEventListener("click", function () {
+      closePopup();
+    });
+
+    closePopups[index].addEventListener("keydown", function (evt) {
+      if (evt.keyCode === 13) {
+        closePopup();
+      }
+    });
+  });
+};
+
 
 // Неактивное состояние страницы
 
