@@ -4,26 +4,18 @@
 
   const form = document.querySelector(".ad-form");
 
-  window.main = {
-    siteForm: form
-  };
-
   let flats = [];
-
   const map = document.querySelector(".map");
-  const fieldsets = window.main.siteForm.querySelectorAll("fieldset");
-  const mapPin = document.querySelector(".map__pin--main");
   let check = true;
+  const addressInput = document.querySelector("input[name='address']");
 
-  const PIN_ANGLE_HEIGHT = 22;
-  const addressInput = window.main.siteForm.querySelector("input[name='address']");
-  const getAddress = (input, element, angleHeight) => {
-    if (check) {
-      input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight / 2));
-    } else {
-      input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight + angleHeight));
-    }
+  window.main = {
+    siteForm: form,
+    address: addressInput,
+    generalMap: map
   };
+
+  const fieldsets = window.main.siteForm.querySelectorAll("fieldset");
 
   const disabledInput = () => {
     if (check) {
@@ -41,7 +33,7 @@
     map.classList.remove("map--faded");
     form.classList.remove("ad-form--disabled");
     disabledInput();
-    getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
+    window.getAddress(addressInput, window.map.pin, window.map.angle, check);
     window.renderPin(window.renderData(flats));
   };
 
@@ -64,17 +56,17 @@
   };
 
   const deliteListener = () => {
-    mapPin.removeEventListener("keydown", enterKeydownHandler);
-    mapPin.removeEventListener("mousedown", leftClickHandler);
+    window.map.pin.removeEventListener("keydown", enterKeydownHandler);
+    window.map.pin.removeEventListener("mousedown", leftClickHandler);
   };
 
   const addActiveMap = () => {
     disabledInput();
-    getAddress(addressInput, mapPin, PIN_ANGLE_HEIGHT);
+    window.getAddress(addressInput, window.map.pin, window.map.angle, check);
     if (map.classList.contains("map--faded")) {
       check = false;
-      mapPin.addEventListener("keydown", enterKeydownHandler);
-      mapPin.addEventListener("mousedown", leftClickHandler);
+      window.map.pin.addEventListener("keydown", enterKeydownHandler);
+      window.map.pin.addEventListener("mousedown", leftClickHandler);
     }
   };
 
