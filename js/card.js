@@ -55,6 +55,8 @@
         imgFragment.append(cardImageTemplate);
         cardPhotos.append(imgFragment);
       }
+    } else if (template.offer.photos.length === 0) {
+      cardImage.remove();
     }
 
     cardAvatar.src = template.author.avatar;
