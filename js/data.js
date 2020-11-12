@@ -58,7 +58,7 @@
         let success;
         switch (xhr.status) {
           case 200:
-            success = "Вы успешно отправили форму!"
+            success = "Вы успешно отправили форму!";
             break;
           case 400:
             error = 'Что-то пошло не так... Неверный запрос';

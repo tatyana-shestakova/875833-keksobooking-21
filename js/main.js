@@ -47,7 +47,7 @@
         deliteListener();
       }
     } else if (evt.keyCode === 13 && window.main.repeat) {
-        window.disabledInput();
+      window.disabledInput();
     }
   };
 
@@ -57,7 +57,7 @@
       if (!map.classList.contains("map--faded")) {
         deliteListener();
       }
-    } else if(evt.which === 1 && window.main.repeat) {
+    } else if (evt.which === 1 && window.main.repeat) {
       window.disabledInput();
     }
   };
@@ -68,14 +68,14 @@
   };
 
   const activateMap = () => {
-    disabledInput();
+    window.disabledInput();
     window.move.getAddress(addressInput, window.move.pin, window.move.angle, window.main.check);
     window.map.renderPin();
     window.main.repeat = true;
   };
 
   window.addActiveMap = () => {
-    disabledInput();
+    window.disabledInput();
     window.move.getAddress(addressInput, window.move.pin, window.move.angle, window.main.check);
     if (map.classList.contains("map--faded")) {
       window.main.check = false;
@@ -84,6 +84,6 @@
     }
   };
 
-  addActiveMap();
+  window.addActiveMap();
 
 })();

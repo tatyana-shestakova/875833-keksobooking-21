@@ -68,7 +68,7 @@
 
   const templateClickHandler = (evt) => {
     window.map.isEscKeyCode(evt, deleteHadler);
-  }
+  };
 
 
   const deleteHadler = () => {
@@ -83,8 +83,8 @@
     templateFragment.appendChild(checkFragment);
     main.appendChild(templateFragment);
 
-    document.addEventListener("click", function() {
-      checkFragment.remove();
+    document.addEventListener("click", function () {
+      deleteHadler();
     });
 
     document.addEventListener("keydown", templateClickHandler);
@@ -92,24 +92,24 @@
     const resetButton = checkFragment.querySelector(".error__button");
 
     if (resetButton) {
-      resetButton.addEventListener("click", function(evt) {
+      resetButton.addEventListener("click", function (evt) {
         evt.preventDefault();
         window.main.siteForm.reset();
-        deleteHadler;
+        deleteHadler();
       });
     }
   };
 
   const successHandler = () => {
     window.main.check = true;
-      window.addActiveMap();
-      renderMessage(successTemplate);
-      window.main.siteForm.reset();
-  }
+    window.addActiveMap();
+    renderMessage(successTemplate);
+    window.main.siteForm.reset();
+  };
 
   const errorHandler = () => {
     renderMessage(errorTemplate);
-  }
+  };
 
   window.main.siteForm.addEventListener("submit", function (evt) {
     window.data.save(new FormData(window.main.siteForm), successHandler, errorHandler);

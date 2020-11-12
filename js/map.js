@@ -15,7 +15,7 @@
       window.data.similarAds.appendChild(adsFragment);
       similarCardList.insertBefore(cardFragment, filtersContainer);
     }
-    addLisnenerCards();
+    window.addListenerCards();
   };
 
   const ErrorHandler = (errorMessage) => {
@@ -69,7 +69,7 @@
     }
   };
 
-  window.addLisnenerCards = () => {
+  window.addListenerCards = () => {
     const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
     const allPopups = document.querySelectorAll(".popup");
     const closePopups = document.querySelectorAll(".popup__close");
