@@ -69,9 +69,9 @@
     }
   };
 
-  const addLisnenerCards = () => {
-    const allPopups = document.querySelectorAll(".popup");
+  window.addLisnenerCards = () => {
     const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
+    const allPopups = document.querySelectorAll(".popup");
     const closePopups = document.querySelectorAll(".popup__close");
     allPopups.forEach(function (value, index) {
       allPins[index].addEventListener("click", function () {
