@@ -1,62 +1,97 @@
 "use strict";
 
 (function () {
-  const TYPE_FLAT = ["palace", "flat", "house", "bungalow"];
-  const TIME_IN = ["12:00", "13:00", "14:00"];
-  const TIME_OUT = ["12:00", "13:00", "14:00"];
-  const ROOM_FEATURES = ["wifi", "dishwasher", "parking", "washer", "elevator", "conditioner"];
-  const ROOM_PHOTOS = ["http://o0.github.io/assets/images/tokyo/hotel1.jpg", "http://o0.github.io/assets/images/tokyo/hotel2.jpg", "http://o0.github.io/assets/images/tokyo/hotel3.jpg"];
-  const similarAds = 8;
+
   const similarAdsList = document.querySelector(".map__pins");
-  const sreenWidth = similarAdsList.clientWidth;
+
+  const URL_DATA = "https://21.javascript.pages.academy/keksobooking/data";
+  const URL = "https://21.javascript.pages.academy/keksobooking";
+
+  const TIMEOUT_IN_MS = 10000;
 
   window.data = {
-    similarAds: similarAdsList
-  };
+    load: (onLoad, onError) => {
+      const xhrData = new XMLHttpRequest();
+      xhrData.responseType = 'json';
 
-  const getRandomNumber = (min, max) => {
-    let number = Math.floor(Math.random() * (max - min + 1)) + min;
-    return number;
-  };
-
-  const getrandomArray = (array) => {
-    let randomArray = [];
-    let randomArrayLength = getRandomNumber(1, array.length);
-    for (let i = 0; i < randomArrayLength; i++) {
-      randomArray.push(array[i]);
-    }
-    return randomArray;
-  };
-
-  window.renderData = (arrData) => {
-    let adsData = {};
-    for (let i = 1; i <= similarAds; i++) {
-      adsData[i] = {
-        author: {
-          avatar: "img/avatars/user0" + i + ".png"
-        },
-        location: {
-          x: getRandomNumber(0, (sreenWidth - (sreenWidth / 10))),
-          y: getRandomNumber(130, 630)
-        },
-        offer: {
-          title: "Заголовок предложения" + i,
-          address: location.x + ", " + location.y,
-          price: getRandomNumber(0, 100000),
-          type: TYPE_FLAT[getRandomNumber(0, TYPE_FLAT.length - 1)],
-          rooms: getRandomNumber(0, 3),
-          guests: getRandomNumber(0, 2),
-          checkin: TIME_IN[getRandomNumber(0, TIME_IN.length - 1)],
-          checkout: TIME_OUT[getRandomNumber(0, TIME_OUT.length - 1)],
-          features: getrandomArray(ROOM_FEATURES),
-          description: "Описание" + i,
-          photos: getrandomArray(ROOM_PHOTOS)
+      xhrData.addEventListener('load', function () {
+        let error;
+        switch (xhrData.status) {
+          case 200:
+            onLoad(xhrData.response);
+            break;
+          case 400:
+            error = 'Что-то пошло не так... Неверный запрос';
+            break;
+          case 401:
+            error = 'Что-то пошло не так... Пользователь не авторизован';
+            break;
+          case 404:
+            error = 'Что-то пошло не так... Ничего не найдено';
+            break;
+          default:
+            error = 'Что-то пошло не так... Cтатус ответа: : ' + xhrData.status + ' ' + xhrData.statusText;
         }
-      };
-      adsData[i].offer.address = adsData[i].location.x + ", " + adsData[i].location.y;
-      arrData.push(adsData[i]);
-    }
-    return arrData;
+        if (error) {
+          onError(error);
+        }
+      });
+      xhrData.timeout = TIMEOUT_IN_MS;
+
+      xhrData.addEventListener('error', function () {
+        onError('Произошла ошибка соединения');
+      });
+      xhrData.addEventListener('timeout', function () {
+        onError('Запрос не успел выполниться за ' + xhrData.timeout + 'мс');
+      });
+
+      xhrData.open('GET', URL_DATA);
+      xhrData.send();
+    },
+
+    save: (data, onSuccess, onError) => {
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        let error;
+        let success;
+        switch (xhr.status) {
+          case 200:
+            success = "Вы успешно отправили форму!";
+            break;
+          case 400:
+            error = 'Что-то пошло не так... Неверный запрос';
+            break;
+          case 401:
+            error = 'Что-то пошло не так... Пользователь не авторизован';
+            break;
+          case 404:
+            error = 'Что-то пошло не так... Ничего не найдено';
+            break;
+          default:
+            error = 'Что-то пошло не так... Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
+        }
+        if (error) {
+          onError(error);
+        } if (success) {
+          onSuccess(success);
+        }
+      });
+      xhr.timeout = 10000;
+
+      xhr.addEventListener('error', function () {
+        onError('Произошла ошибка соединения');
+      });
+      xhr.addEventListener('timeout', function () {
+        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      });
+
+      xhr.open('POST', URL);
+      xhr.send(data);
+    },
+
+    similarAds: similarAdsList
   };
 
 })();

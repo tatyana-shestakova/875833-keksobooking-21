@@ -3,6 +3,10 @@
 (function () {
   const timeinSelect = window.main.siteForm.querySelector("#timein");
   const timeoutSelect = window.main.siteForm.querySelector("#timeout");
+  const successTemplate = document.querySelector("#success").content.querySelector(".success");
+  const errorTemplate = document.querySelector("#error").content.querySelector(".error");
+  const main = document.querySelector("main");
+  let checkFragment;
 
   timeinSelect.addEventListener("change", function () {
     if (timeinSelect.value !== timeoutSelect.value) {
@@ -39,7 +43,7 @@
       guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
     } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) !== 0) {
       guestsNumber.setCustomValidity("Выберете пункт «не для гостей»");
-    } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) === 0) {
+    } else {
       guestsNumber.setCustomValidity("");
     }
     guestsNumber.reportValidity();
@@ -60,6 +64,56 @@
     } else if (typeSelect.value === "palace") {
       costInput.min = "10000";
     }
+  });
+
+  const templateClickHandler = (evt) => {
+    window.map.isEscKeyCode(evt, deleteHadler);
+  };
+
+
+  const deleteHadler = () => {
+    checkFragment.remove();
+    document.removeEventListener("keydown", templateClickHandler);
+  };
+
+
+  const renderMessage = (clone) => {
+    checkFragment = clone.cloneNode(true);
+    let templateFragment = document.createDocumentFragment();
+    templateFragment.appendChild(checkFragment);
+    main.appendChild(templateFragment);
+
+    document.addEventListener("click", function () {
+      deleteHadler();
+    });
+
+    document.addEventListener("keydown", templateClickHandler);
+
+    const resetButton = checkFragment.querySelector(".error__button");
+
+    if (resetButton) {
+      resetButton.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        window.main.siteForm.reset();
+        deleteHadler();
+      });
+    }
+  };
+
+  const successHandler = () => {
+    window.main.check = true;
+    window.addActiveMap();
+    renderMessage(successTemplate);
+    window.main.siteForm.reset();
+  };
+
+  const errorHandler = () => {
+    renderMessage(errorTemplate);
+  };
+
+  window.main.siteForm.addEventListener("submit", function (evt) {
+    window.data.save(new FormData(window.main.siteForm), successHandler, errorHandler);
+    evt.preventDefault();
   });
 
 })();
