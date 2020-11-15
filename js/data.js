@@ -2,10 +2,23 @@
 
 (function () {
 
-  const similarAdsList = document.querySelector(".map__pins");
-
   const URL_DATA = "https://21.javascript.pages.academy/keksobooking/data";
   const URL = "https://21.javascript.pages.academy/keksobooking";
+
+  const RESPONSE_STATUS = {
+    OK: 200,
+    ERROR_400: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404
+  };
+
+  const ERRORS_MESSAGE = {
+    [RESPONSE_STATUS.ERROR_400]: "Что-то пошло не так... Неверный запрос",
+    [RESPONSE_STATUS.UNAUTHORIZED]: "Что-то пошло не так... Пользователь не авторизован",
+    [RESPONSE_STATUS.NOT_FOUND]: "Что-то пошло не так... Ничего не найдено"
+  };
+
+  const similarAdsList = document.querySelector(".map__pins");
 
   const TIMEOUT_IN_MS = 10000;
 
@@ -15,25 +28,11 @@
       xhrData.responseType = 'json';
 
       xhrData.addEventListener('load', function () {
-        let error;
-        switch (xhrData.status) {
-          case 200:
-            onLoad(xhrData.response);
-            break;
-          case 400:
-            error = 'Что-то пошло не так... Неверный запрос';
-            break;
-          case 401:
-            error = 'Что-то пошло не так... Пользователь не авторизован';
-            break;
-          case 404:
-            error = 'Что-то пошло не так... Ничего не найдено';
-            break;
-          default:
-            error = 'Что-то пошло не так... Cтатус ответа: : ' + xhrData.status + ' ' + xhrData.statusText;
-        }
-        if (error) {
-          onError(error);
+
+        if (xhrData.status === RESPONSE_STATUS.OK) {
+          onLoad(xhrData.response);
+        } else {
+          onError(ERRORS_MESSAGE[xhrData.status]);
         }
       });
       xhrData.timeout = TIMEOUT_IN_MS;
@@ -54,28 +53,10 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        let error;
-        let success;
-        switch (xhr.status) {
-          case 200:
-            success = "Вы успешно отправили форму!";
-            break;
-          case 400:
-            error = 'Что-то пошло не так... Неверный запрос';
-            break;
-          case 401:
-            error = 'Что-то пошло не так... Пользователь не авторизован';
-            break;
-          case 404:
-            error = 'Что-то пошло не так... Ничего не найдено';
-            break;
-          default:
-            error = 'Что-то пошло не так... Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
-        }
-        if (error) {
-          onError(error);
-        } if (success) {
-          onSuccess(success);
+        if (xhr.status === RESPONSE_STATUS.OK) {
+          onSuccess(xhr.response);
+        } else {
+          onError(ERRORS_MESSAGE[xhr.status]);
         }
       });
       xhr.timeout = 10000;

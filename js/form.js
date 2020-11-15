@@ -24,28 +24,24 @@
   const guestsNumber = window.main.siteForm.querySelector("#capacity");
 
   guestsNumber.addEventListener("change", function () {
+    guestsNumber.setCustomValidity("");
     if (guestsNumber.value > roomsNumber.value) {
       guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
     } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
       guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
     } else if (Number(guestsNumber.value) === Number(roomsNumber.value)) {
       guestsNumber.setCustomValidity("");
-    } else {
-      guestsNumber.setCustomValidity("");
     }
-    guestsNumber.reportValidity();
+    roomsNumber.reportValidity();
   });
 
   roomsNumber.addEventListener("change", function () {
+    roomsNumber.setCustomValidity("");
     if (roomsNumber.value < guestsNumber.value) {
       roomsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
     } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) !== 0) {
       roomsNumber.setCustomValidity("Это помещение не для гостей!");
-    } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
-      roomsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
     } else if (Number(guestsNumber.value) === Number(roomsNumber.value)) {
-      roomsNumber.setCustomValidity("");
-    } else {
       roomsNumber.setCustomValidity("");
     }
     roomsNumber.reportValidity();
@@ -70,11 +66,11 @@
   });
 
   const templateClickHandler = (evt) => {
-    window.map.isEscKeyCode(evt, deleteHadler);
+    window.map.isEscKeyCode(evt, deleteHandler);
   };
 
 
-  const deleteHadler = () => {
+  const deleteHandler = () => {
     checkFragment.remove();
     document.removeEventListener("keydown", templateClickHandler);
   };
@@ -87,7 +83,7 @@
     main.appendChild(templateFragment);
 
     document.addEventListener("click", function () {
-      deleteHadler();
+      deleteHandler();
     });
 
     document.addEventListener("keydown", templateClickHandler);
@@ -98,7 +94,7 @@
       resetButton.addEventListener("click", function (evt) {
         evt.preventDefault();
         window.main.siteForm.reset();
-        deleteHadler();
+        deleteHandler();
       });
     }
   };
