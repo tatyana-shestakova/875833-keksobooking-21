@@ -10,12 +10,12 @@
     let adsFragment = document.createDocumentFragment();
     let cardFragment = document.createDocumentFragment();
     for (let j = 0; j < pins.length; j++) {
-      adsFragment.appendChild(window.renderSimilarAds(pins[j]));
-      cardFragment.appendChild(window.renderCards(pins[j]));
+      adsFragment.appendChild(window.card.renderSimilarAds(pins[j]));
+      cardFragment.appendChild(window.card.renderCards(pins[j]));
       window.data.similarAds.appendChild(adsFragment);
       similarCardList.insertBefore(cardFragment, filtersContainer);
     }
-    window.addListenerCards();
+    window.map.addListenerCards();
   };
 
   const ErrorHandler = (errorMessage) => {
@@ -44,6 +44,34 @@
     },
     renderPin: () => {
       window.data.load(renderPinHandler, ErrorHandler);
+    },
+    addListenerCards: () => {
+      const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
+      const allPopups = document.querySelectorAll(".popup");
+      const closePopups = document.querySelectorAll(".popup__close");
+      allPopups.forEach(function (value, index) {
+        allPins[index].addEventListener("click", function () {
+          change = value;
+          hiddenAllPopups(allPopups);
+          openPopup();
+        });
+
+        allPins[index].addEventListener("keydown", function (evt) {
+          if (evt.keyCode === 13) {
+            change = value;
+            hiddenAllPopups(allPopups);
+            openPopup();
+          }
+        });
+
+        closePopups[index].addEventListener("click", function () {
+          closePopup();
+        });
+
+        closePopups[index].addEventListener("keydown", function (evt) {
+          window.map.isEnterKeyCode(evt, closePopup);
+        });
+      });
     }
   };
 
@@ -67,35 +95,6 @@
     for (let popup of popups) {
       popup.classList.add("hidden");
     }
-  };
-
-  window.addListenerCards = () => {
-    const allPins = document.querySelectorAll(".map__pin:not(.map__pin--main)");
-    const allPopups = document.querySelectorAll(".popup");
-    const closePopups = document.querySelectorAll(".popup__close");
-    allPopups.forEach(function (value, index) {
-      allPins[index].addEventListener("click", function () {
-        change = value;
-        hiddenAllPopups(allPopups);
-        openPopup();
-      });
-
-      allPins[index].addEventListener("keydown", function (evt) {
-        if (evt.keyCode === 13) {
-          change = value;
-          hiddenAllPopups(allPopups);
-          openPopup();
-        }
-      });
-
-      closePopups[index].addEventListener("click", function () {
-        closePopup();
-      });
-
-      closePopups[index].addEventListener("keydown", function (evt) {
-        window.map.isEnterKeyCode(evt, closePopup);
-      });
-    });
   };
 
 })();

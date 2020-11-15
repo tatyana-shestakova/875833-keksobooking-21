@@ -5,6 +5,7 @@
   const MAX_COORD_Y = 630;
   const PIN_ANGLE_HEIGHT = 22;
   const mapPin = document.querySelector(".map__pin--main");
+  const html = document.querySelector("html");
 
   window.move = {
     getAddress: (input, element, angleHeight, isTrue) => {
@@ -30,9 +31,8 @@
       moveEvt.preventDefault();
 
 
-      let clientMapWidthMin = Math.floor(window.main.generalMap.getBoundingClientRect().x) + (Math.floor(window.main.generalMap.getBoundingClientRect().x) / 3);
-      let clientMapWidthMax = window.main.generalMap.clientWidth + (clientMapWidthMin / 2);
-
+      let clientMapWidthMin = (html.clientWidth - window.main.generalMap.clientWidth) / 2 + window.move.pin.clientWidth;
+      let clientMapWidthMax = window.main.generalMap.clientWidth + clientMapWidthMin - (window.move.pin.clientWidth * 2);
       if (moveEvt.pageY < MAX_COORD_Y && moveEvt.pageY > MIN_COORD_Y && moveEvt.pageX < clientMapWidthMax && moveEvt.pageX > clientMapWidthMin) {
         let moving = {
           x: starCoords.x - moveEvt.clientX,
