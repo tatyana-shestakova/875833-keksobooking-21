@@ -27,27 +27,28 @@ window.move.pin.addEventListener("mousedown", (evt) => {
   };
 
   const mouseMoveHandler = (moveEvt) => {
-    moveEvt.preventDefault();
+    if (!window.main.check) {
+      moveEvt.preventDefault();
 
 
-    let clientMapWidthMin = (html.clientWidth - window.main.generalMap.clientWidth) / 2 + window.move.pin.clientWidth;
-    let clientMapWidthMax = window.main.generalMap.clientWidth + clientMapWidthMin - (window.move.pin.clientWidth * 2);
-    if (moveEvt.pageY < MAX_COORD_Y && moveEvt.pageY > MIN_COORD_Y && moveEvt.pageX < clientMapWidthMax && moveEvt.pageX > clientMapWidthMin) {
-      let moving = {
-        x: starCoords.x - moveEvt.clientX,
-        y: starCoords.y - moveEvt.clientY
-      };
+      let clientMapWidthMin = (html.clientWidth - window.main.generalMap.clientWidth) / 2 + (window.move.pin.clientWidth / 2);
+      let clientMapWidthMax = window.main.generalMap.clientWidth + clientMapWidthMin - window.move.pin.clientWidth;
+      if (moveEvt.pageY < MAX_COORD_Y && moveEvt.pageY > MIN_COORD_Y && moveEvt.pageX < clientMapWidthMax && moveEvt.pageX > clientMapWidthMin) {
+        let moving = {
+          x: starCoords.x - moveEvt.clientX,
+          y: starCoords.y - moveEvt.clientY
+        };
 
-      starCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+        starCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
 
-      window.move.pin.style.left = (window.move.pin.offsetLeft - moving.x) + "px";
-      window.move.pin.style.top = (window.move.pin.offsetTop - moving.y) + "px";
+        window.move.pin.style.left = (window.move.pin.offsetLeft - moving.x) + "px";
+        window.move.pin.style.top = (window.move.pin.offsetTop - moving.y) + "px";
 
-      window.move.getAddress(window.main.address, window.move.pin, window.move.angle, window.main.check);
-
+        window.move.getAddress(window.main.address, window.move.pin, window.move.angle, window.main.check);
+      }
     }
   };
 
