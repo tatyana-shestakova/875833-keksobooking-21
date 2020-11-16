@@ -9,7 +9,8 @@ module.exports = {
     "./js/move.js",
     "./js/main.js",
     "./js/form.js",
-    "./js/debounce.js"
+    "./js/debounce.js",
+    "./js/image.js"
   ],
   output: {
     filename: "bundle.js",
