@@ -13,38 +13,45 @@
 
   window.card = {
     renderSimilarAds: (template) => {
-      let adsElement = adsTemplate.cloneNode(true);
-      adsElement.style = "left: " + (template.location.x + adsElement.style.width) + "px; top: " + (template.location.y + adsElement.style.height) + "px;";
-      let image = adsElement.querySelector("img");
+      let adsItem = adsTemplate.cloneNode(true);
+      adsItem.style = "left: " + (template.location.x + adsItem.style.width) + "px; top: " + (template.location.y + adsItem.style.height) + "px;";
+      let image = adsItem.querySelector("img");
       image.src = template.author.avatar;
       image.alt = template.offer.title;
-      return adsElement;
+      return adsItem;
     },
-    renderCards: (template) => {
-      let cardElement = cardTemplate.cloneNode(true);
-      let cardTitle = cardElement.querySelector(".popup__title");
-      let cardAddress = cardElement.querySelector(".popup__text--address");
-      let cardPrice = cardElement.querySelector(".popup__text--price");
-      let cardType = cardElement.querySelector(".popup__type");
-      let cardRoom = cardElement.querySelector(".popup__text--capacity");
-      let cardTime = cardElement.querySelector(".popup__text--time");
-      let cardFeaturesList = cardElement.querySelector(".popup__features");
-      let cardFeaturesItem = cardFeaturesList.querySelectorAll(".popup__feature");
-      let cardDescription = cardElement.querySelector(".popup__description");
-      let cardPhotos = cardElement.querySelector(".popup__photos");
+    renderAds: (template) => {
+      let card = cardTemplate.cloneNode(true);
+      let cardTitle = card.querySelector(".popup__title");
+      let cardAddress = card.querySelector(".popup__text--address");
+      let cardPrice = card.querySelector(".popup__text--price");
+      let cardType = card.querySelector(".popup__type");
+      let cardRoom = card.querySelector(".popup__text--capacity");
+      let cardTime = card.querySelector(".popup__text--time");
+      let cardFeaturesList = card.querySelector(".popup__features");
+      let cardFeaturesItems = cardFeaturesList.querySelectorAll(".popup__feature");
+      let cardDescription = card.querySelector(".popup__description");
+      let cardPhotos = card.querySelector(".popup__photos");
       let cardImage = cardPhotos.querySelector(".popup__photo");
-      let cardAvatar = cardElement.querySelector(".popup__avatar");
+      let cardAvatar = card.querySelector(".popup__avatar");
       cardTitle.textContent = template.offer.title;
       cardAddress.textContent = template.offer.address;
       cardPrice.textContent = template.offer.price + "₽/ночь";
       cardType.textContent = TYPE_FLAT_DESCRIPTION[template.offer.type];
       cardRoom.textContent = template.offer.rooms + " комнаты для " + template.offer.guests + " гостей.";
       cardTime.textContent = "Заезд после " + template.offer.checkin + ", выезд до " + template.offer.checkout + ".";
-      cardFeaturesItem.forEach(function (value, index) {
-        if (!value.classList.contains("popup__feature--" + template.offer.features[index])) {
-          value.remove();
-        }
+      cardFeaturesItems.forEach((value) => {
+        value.remove();
       });
+      if (template.offer.features.length > 0) {
+        for (let i = 0; i < template.offer.features.length; i++) {
+          let item = document.createElement("li");
+          item.classList.add("popup__feature");
+          item.classList.add("popup__feature--" + template.offer.features[i]);
+          cardFeaturesList.appendChild(item);
+        }
+      }
+
       cardDescription.textContent = template.offer.description;
       cardImage.src = template.offer.photos[0];
       if (template.offer.photos.length > 1) {
@@ -60,8 +67,8 @@
       }
 
       cardAvatar.src = template.author.avatar;
-      cardElement.classList.add("hidden");
-      return cardElement;
+      card.classList.add("hidden");
+      return card;
     }
   };
 

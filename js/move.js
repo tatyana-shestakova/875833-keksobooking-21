@@ -19,7 +19,7 @@
     angle: PIN_ANGLE_HEIGHT
   };
 
-  window.move.pin.addEventListener("mousedown", function (evt) {
+  window.move.pin.addEventListener("mousedown", (evt) => {
     evt.preventDefault();
 
     let starCoords = {

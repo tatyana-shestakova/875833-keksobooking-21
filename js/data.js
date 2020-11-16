@@ -27,7 +27,7 @@
       const xhrData = new XMLHttpRequest();
       xhrData.responseType = 'json';
 
-      xhrData.addEventListener('load', function () {
+      xhrData.addEventListener('load', () => {
 
         if (xhrData.status === RESPONSE_STATUS.OK) {
           onLoad(xhrData.response);
@@ -37,10 +37,10 @@
       });
       xhrData.timeout = TIMEOUT_IN_MS;
 
-      xhrData.addEventListener('error', function () {
+      xhrData.addEventListener('error', () => {
         onError('Произошла ошибка соединения');
       });
-      xhrData.addEventListener('timeout', function () {
+      xhrData.addEventListener('timeout', () => {
         onError('Запрос не успел выполниться за ' + xhrData.timeout + 'мс');
       });
 
@@ -52,7 +52,7 @@
       const xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
-      xhr.addEventListener('load', function () {
+      xhr.addEventListener('load', () => {
         if (xhr.status === RESPONSE_STATUS.OK) {
           onSuccess(xhr.response);
         } else {
@@ -61,10 +61,10 @@
       });
       xhr.timeout = 10000;
 
-      xhr.addEventListener('error', function () {
+      xhr.addEventListener('error', () => {
         onError('Произошла ошибка соединения');
       });
-      xhr.addEventListener('timeout', function () {
+      xhr.addEventListener('timeout', () => {
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 

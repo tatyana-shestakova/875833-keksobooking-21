@@ -31,14 +31,14 @@
       const allPins = (window.map.getElements(".map__pin:not(.map__pin--main)"));
       const allPopups = document.querySelectorAll(".popup");
       const closePopups = document.querySelectorAll(".popup__close");
-      allPopups.forEach(function (value, index) {
-        allPins[index].addEventListener("click", function () {
+      allPopups.forEach((value, index) => {
+        allPins[index].addEventListener("click", () => {
           change = value;
           hiddenAllPopups(allPopups);
           openPopup();
         });
 
-        allPins[index].addEventListener("keydown", function (evt) {
+        allPins[index].addEventListener("keydown", (evt) => {
           if (evt.keyCode === 13) {
             change = value;
             hiddenAllPopups(allPopups);
@@ -46,11 +46,11 @@
           }
         });
 
-        closePopups[index].addEventListener("click", function () {
+        closePopups[index].addEventListener("click", () => {
           closePopup();
         });
 
-        closePopups[index].addEventListener("keydown", function (evt) {
+        closePopups[index].addEventListener("keydown", (evt) => {
           window.map.isEnterKeyCode(evt, closePopup);
         });
       });
@@ -60,7 +60,7 @@
       return elements;
     },
     clearElement: (element) => {
-      element.forEach(function (value) {
+      element.forEach((value) => {
         value.remove();
       });
     },
@@ -73,7 +73,7 @@
 
       for (let j = 0; j < takeNumber; j++) {
         adsFragment.appendChild(window.card.renderSimilarAds(pins[j]));
-        cardFragment.appendChild(window.card.renderCards(pins[j]));
+        cardFragment.appendChild(window.card.renderAds(pins[j]));
         window.data.similarAds.appendChild(adsFragment);
         similarCardList.insertBefore(cardFragment, filtersContainer);
       }

@@ -6,36 +6,14 @@
   const successTemplate = document.querySelector("#success").content.querySelector(".success");
   const errorTemplate = document.querySelector("#error").content.querySelector(".error");
   const main = document.querySelector("main");
-  let checkFragment;
-
-  timeinSelect.addEventListener("change", function () {
-    if (timeinSelect.value !== timeoutSelect.value) {
-      timeoutSelect.value = timeinSelect.value;
-    }
-  });
-
-  timeoutSelect.addEventListener("change", function () {
-    if (timeoutSelect.value !== timeinSelect.value) {
-      timeinSelect.value = timeoutSelect.value;
-    }
-  });
-
   const roomsNumber = window.main.siteForm.querySelector("#room_number");
   const guestsNumber = window.main.siteForm.querySelector("#capacity");
+  const typeSelect = window.main.siteForm.querySelector("#type");
+  const costInput = window.main.siteForm.querySelector("#price");
+  costInput.min = "1000";
+  let checkFragment;
 
-  guestsNumber.addEventListener("change", function () {
-    guestsNumber.setCustomValidity("");
-    if (guestsNumber.value > roomsNumber.value) {
-      guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
-    } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
-      guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
-    } else if (Number(guestsNumber.value) === Number(roomsNumber.value)) {
-      guestsNumber.setCustomValidity("");
-    }
-    roomsNumber.reportValidity();
-  });
-
-  roomsNumber.addEventListener("change", function () {
+  const checkRooms = () => {
     roomsNumber.setCustomValidity("");
     if (roomsNumber.value < guestsNumber.value) {
       roomsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
@@ -45,15 +23,28 @@
       roomsNumber.setCustomValidity("");
     }
     roomsNumber.reportValidity();
-  });
+  };
 
+  const checkGuests = () => {
+    guestsNumber.setCustomValidity("");
+    if (guestsNumber.value > roomsNumber.value) {
+      guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
+    } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
+      guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
+    } else if (Number(guestsNumber.value) === Number(roomsNumber.value)) {
+      guestsNumber.setCustomValidity("");
+    }
+    guestsNumber.reportValidity();
+  };
 
-  const typeSelect = window.main.siteForm.querySelector("#type");
-  const costInput = window.main.siteForm.querySelector("#price");
+  const checkTime = () => {
+    if (timeinSelect.value !== timeoutSelect.value || timeoutSelect.value !== timeinSelect.value) {
+      timeoutSelect.value = timeinSelect.value;
+      timeinSelect.value = timeoutSelect.value;
+    }
+  };
 
-  costInput.min = "1000";
-
-  typeSelect.addEventListener("change", function () {
+  const checkMinPrice = () => {
     if (typeSelect.value === "bungalow") {
       costInput.min = "0";
     } else if (typeSelect.value === "flat") {
@@ -63,6 +54,13 @@
     } else if (typeSelect.value === "palace") {
       costInput.min = "10000";
     }
+  };
+
+  window.main.siteForm.addEventListener("change", () => {
+    checkRooms();
+    checkGuests();
+    checkTime();
+    checkMinPrice();
   });
 
   const templateClickHandler = (evt) => {
@@ -82,7 +80,7 @@
     templateFragment.appendChild(checkFragment);
     main.appendChild(templateFragment);
 
-    document.addEventListener("click", function () {
+    document.addEventListener("click", () => {
       deleteHandler();
     });
 
@@ -91,9 +89,10 @@
     const resetButton = checkFragment.querySelector(".error__button");
 
     if (resetButton) {
-      resetButton.addEventListener("click", function (evt) {
+      resetButton.addEventListener("click", (evt) => {
         evt.preventDefault();
         window.main.siteForm.reset();
+        window.sort.sortFilters.reset();
         deleteHandler();
       });
     }
@@ -104,13 +103,14 @@
     window.main.addActiveMap();
     renderMessage(successTemplate);
     window.main.siteForm.reset();
+    window.sort.sortFilters.reset();
   };
 
   const errorHandler = () => {
     renderMessage(errorTemplate);
   };
 
-  window.main.siteForm.addEventListener("submit", function (evt) {
+  window.main.siteForm.addEventListener("submit", (evt) => {
     window.data.save(new FormData(window.main.siteForm), successHandler, errorHandler);
     evt.preventDefault();
   });
