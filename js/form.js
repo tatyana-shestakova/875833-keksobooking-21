@@ -9,14 +9,25 @@ const roomsNumber = window.main.siteForm.querySelector("#room_number");
 const guestsNumber = window.main.siteForm.querySelector("#capacity");
 const typeSelect = window.main.siteForm.querySelector("#type");
 const costInput = window.main.siteForm.querySelector("#price");
-costInput.min = "1000";
+const MIN_PRICE = {
+  LOW: "0",
+  MIDDLE: "1000",
+  HIGH: "5000",
+  EXPENSIVE: "10000"
+};
+
+const NOT_GUESTS = {
+  ROOMS: 100,
+  COUNT: 0
+};
+
 let checkFragment;
 
 const checkRooms = () => {
   roomsNumber.setCustomValidity("");
   if (roomsNumber.value < guestsNumber.value) {
     roomsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
-  } else if (Number(roomsNumber.value) === 100 && Number(guestsNumber.value) !== 0) {
+  } else if (Number(roomsNumber.value) === NOT_GUESTS.ROOMS && Number(guestsNumber.value) !== NOT_GUESTS.COUNT) {
     roomsNumber.setCustomValidity("Это помещение не для гостей!");
   } else if (Number(guestsNumber.value) === Number(roomsNumber.value)) {
     roomsNumber.setCustomValidity("");
@@ -28,7 +39,7 @@ const checkGuests = () => {
   guestsNumber.setCustomValidity("");
   if (guestsNumber.value > roomsNumber.value) {
     guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
-  } else if (Number(guestsNumber.value) === 0 && Number(roomsNumber.value) !== 100) {
+  } else if (Number(guestsNumber.value) === NOT_GUESTS.COUNT && Number(roomsNumber.value) !== NOT_GUESTS.ROOMS) {
     guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
   } else if (Number(guestsNumber.value) === Number(roomsNumber.value)) {
     guestsNumber.setCustomValidity("");
@@ -36,29 +47,35 @@ const checkGuests = () => {
   guestsNumber.reportValidity();
 };
 
-const checkTime = () => {
-  if (timeinSelect.value !== timeoutSelect.value || timeoutSelect.value !== timeinSelect.value) {
+timeinSelect.addEventListener("change", () => {
+  if (timeoutSelect.value !== timeinSelect.value) {
     timeoutSelect.value = timeinSelect.value;
+  }
+});
+
+timeoutSelect.addEventListener("change", () => {
+  if (timeinSelect.value !== timeoutSelect.value) {
     timeinSelect.value = timeoutSelect.value;
   }
-};
+});
+
 
 const checkMinPrice = () => {
   if (typeSelect.value === "bungalow") {
-    costInput.min = "0";
+    costInput.min = MIN_PRICE.LOW;
   } else if (typeSelect.value === "flat") {
-    costInput.min = "1000";
+    costInput.min = MIN_PRICE.MIDDLE;
   } else if (typeSelect.value === "house") {
-    costInput.min = "5000";
+    costInput.min = MIN_PRICE.HIGH;
   } else if (typeSelect.value === "palace") {
-    costInput.min = "10000";
+    costInput.min = MIN_PRICE.EXPENSIVE;
   }
+  costInput.placeholder = costInput.min;
 };
 
 window.main.siteForm.addEventListener("change", () => {
   checkRooms();
   checkGuests();
-  checkTime();
   checkMinPrice();
 });
 
@@ -89,20 +106,20 @@ const renderMessage = (clone) => {
 
   if (resetButton) {
     resetButton.addEventListener("click", (evt) => {
-      evt.preventDefault();
       window.main.siteForm.reset();
       window.sort.sortFilters.reset();
+      evt.preventDefault();
       deleteHandler();
     });
   }
 };
 
 const successHandler = () => {
-  window.main.check = true;
-  window.main.addActiveMap();
-  renderMessage(successTemplate);
   window.main.siteForm.reset();
   window.sort.sortFilters.reset();
+  renderMessage(successTemplate);
+  window.main.check = true;
+  window.main.addActiveMap();
 };
 
 const errorHandler = () => {

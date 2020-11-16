@@ -6,7 +6,7 @@ const LEFT_CLICK_MOUSE = 1;
 const form = document.querySelector(".ad-form");
 const map = document.querySelector(".map");
 let isDisabledMap = true;
-const addressInput = document.querySelector("input[name='address']");
+const addressInput = document.querySelector("input[name=address]");
 
 window.main = {
   siteForm: form,
@@ -33,9 +33,8 @@ window.main = {
   },
   addActiveMap: () => {
     window.main.disabledInput();
-    window.move.getAddress(addressInput, window.move.pin, window.move.angle, window.main.check);
+    window.move.getAddress(window.main.address, window.move.pin, window.move.angle, window.main.check);
     if (map.classList.contains("map--faded")) {
-      window.main.check = false;
       window.move.pin.addEventListener("keydown", enterKeydownHandler);
       window.move.pin.addEventListener("mousedown", leftClickHandler);
     }
@@ -68,8 +67,9 @@ const deliteListener = () => {
 };
 
 const activateMap = () => {
+  window.main.check = false;
   window.main.disabledInput();
-  window.move.getAddress(addressInput, window.move.pin, window.move.angle, window.main.check);
+  window.move.getAddress(window.main.address, window.move.pin, window.move.angle, window.main.check);
   window.map.renderPin();
 };
 
