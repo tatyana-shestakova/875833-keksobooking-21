@@ -113,4 +113,3 @@ window.main.siteForm.addEventListener("submit", (evt) => {
   window.data.save(new FormData(window.main.siteForm), successHandler, errorHandler);
   evt.preventDefault();
 });
-
