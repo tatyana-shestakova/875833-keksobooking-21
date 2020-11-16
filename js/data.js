@@ -1,97 +1,75 @@
 "use strict";
 
-(function () {
+const URL_DATA = "https://21.javascript.pages.academy/keksobooking/data";
+const URL_POST = "https://21.javascript.pages.academy/keksobooking";
 
-  const similarAdsList = document.querySelector(".map__pins");
+const RESPONSE_STATUS = {
+  OK: 200,
+  ERROR_400: 400,
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404
+};
 
-  const URL_DATA = "https://21.javascript.pages.academy/keksobooking/data";
-  const URL = "https://21.javascript.pages.academy/keksobooking";
+const ERRORS_MESSAGE = {
+  [RESPONSE_STATUS.ERROR_400]: "Что-то пошло не так... Неверный запрос",
+  [RESPONSE_STATUS.UNAUTHORIZED]: "Что-то пошло не так... Пользователь не авторизован",
+  [RESPONSE_STATUS.NOT_FOUND]: "Что-то пошло не так... Ничего не найдено"
+};
 
-  const TIMEOUT_IN_MS = 10000;
+const similarAdsList = document.querySelector(".map__pins");
 
-  window.data = {
-    load: (onLoad, onError) => {
-      const xhrData = new XMLHttpRequest();
-      xhrData.responseType = 'json';
+const TIMEOUT_IN_MS = 10000;
 
-      xhrData.addEventListener('load', function () {
-        let error;
-        switch (xhrData.status) {
-          case 200:
-            onLoad(xhrData.response);
-            break;
-          case 400:
-            error = 'Что-то пошло не так... Неверный запрос';
-            break;
-          case 401:
-            error = 'Что-то пошло не так... Пользователь не авторизован';
-            break;
-          case 404:
-            error = 'Что-то пошло не так... Ничего не найдено';
-            break;
-          default:
-            error = 'Что-то пошло не так... Cтатус ответа: : ' + xhrData.status + ' ' + xhrData.statusText;
-        }
-        if (error) {
-          onError(error);
-        }
-      });
-      xhrData.timeout = TIMEOUT_IN_MS;
+window.data = {
+  load: (onLoad, onError) => {
+    const xhrData = new XMLHttpRequest();
+    xhrData.responseType = 'json';
 
-      xhrData.addEventListener('error', function () {
-        onError('Произошла ошибка соединения');
-      });
-      xhrData.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhrData.timeout + 'мс');
-      });
+    xhrData.addEventListener('load', () => {
 
-      xhrData.open('GET', URL_DATA);
-      xhrData.send();
-    },
+      if (xhrData.status === RESPONSE_STATUS.OK) {
+        onLoad(xhrData.response);
+      } else {
+        onError(ERRORS_MESSAGE[xhrData.status]);
+      }
+    });
+    xhrData.timeout = TIMEOUT_IN_MS;
 
-    save: (data, onSuccess, onError) => {
-      const xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
+    xhrData.addEventListener('error', () => {
+      onError('Произошла ошибка соединения');
+    });
+    xhrData.addEventListener('timeout', () => {
+      onError('Запрос не успел выполниться за ' + xhrData.timeout + 'мс');
+    });
 
-      xhr.addEventListener('load', function () {
-        let error;
-        let success;
-        switch (xhr.status) {
-          case 200:
-            success = "Вы успешно отправили форму!";
-            break;
-          case 400:
-            error = 'Что-то пошло не так... Неверный запрос';
-            break;
-          case 401:
-            error = 'Что-то пошло не так... Пользователь не авторизован';
-            break;
-          case 404:
-            error = 'Что-то пошло не так... Ничего не найдено';
-            break;
-          default:
-            error = 'Что-то пошло не так... Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
-        }
-        if (error) {
-          onError(error);
-        } if (success) {
-          onSuccess(success);
-        }
-      });
-      xhr.timeout = 10000;
+    xhrData.open('GET', URL_DATA);
+    xhrData.send();
+  },
 
-      xhr.addEventListener('error', function () {
-        onError('Произошла ошибка соединения');
-      });
-      xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-      });
+  save: (data, onSuccess, onError) => {
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
 
-      xhr.open('POST', URL);
-      xhr.send(data);
-    },
+    xhr.addEventListener('load', () => {
+      if (xhr.status === RESPONSE_STATUS.OK) {
+        onSuccess(xhr.response);
+      } else {
+        onError(ERRORS_MESSAGE[xhr.status]);
+      }
+    });
+    xhr.timeout = 10000;
 
-    similarAds: similarAdsList
-  };
+    xhr.addEventListener('error', () => {
+      onError('Произошла ошибка соединения');
+    });
+    xhr.addEventListener('timeout', () => {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
 
-})();
+    xhr.open('POST', URL_POST);
+    xhr.send(data);
+  },
+
+  similarAds: similarAdsList
+};
+
