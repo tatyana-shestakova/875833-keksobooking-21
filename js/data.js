@@ -5,13 +5,13 @@ const URL_POST = "https://21.javascript.pages.academy/keksobooking";
 
 const RESPONSE_STATUS = {
   OK: 200,
-  ERROR_400: 400,
+  BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   NOT_FOUND: 404
 };
 
 const ERRORS_MESSAGE = {
-  [RESPONSE_STATUS.ERROR_400]: "Что-то пошло не так... Неверный запрос",
+  [RESPONSE_STATUS.BAD_REQUEST]: "Что-то пошло не так... Неверный запрос",
   [RESPONSE_STATUS.UNAUTHORIZED]: "Что-то пошло не так... Пользователь не авторизован",
   [RESPONSE_STATUS.NOT_FOUND]: "Что-то пошло не так... Ничего не найдено"
 };
