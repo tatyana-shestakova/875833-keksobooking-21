@@ -44,3 +44,13 @@ fotoAds.addEventListener("change", () => {
     reader.readAsDataURL(file);
   }
 });
+
+window.image = {
+  clearLoadFoto: () => {
+    avatarPreview.src = "img/muffin-grey.svg";
+    if (document.querySelector("img.ad-form__photo")) {
+      window.map.clearElement(window.map.getElements("img.ad-form__photo"));
+    }
+  }
+};
+

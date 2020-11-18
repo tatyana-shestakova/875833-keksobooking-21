@@ -9,6 +9,7 @@ let changeCard;
 let changePin;
 
 window.map = {
+  count: COUNT_PINS,
   sortedList: sortedPins,
   ESC_KEYCODE: 27,
   ENTER_KEYCODE: 13,
@@ -71,7 +72,7 @@ window.map = {
     window.map.clearElement(window.map.getElements(".popup"));
     const adsFragment = document.createDocumentFragment();
     const cardFragment = document.createDocumentFragment();
-    const takeNumber = COUNT_PINS > pins.length ? pins.length : COUNT_PINS;
+    const takeNumber = window.map.count > pins.length ? pins.length : window.map.count;
 
     for (let j = 0; j < takeNumber; j++) {
       adsFragment.appendChild(window.card.renderSimilarAds(pins[j]));

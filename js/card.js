@@ -13,13 +13,17 @@ const cardTemplate = document.querySelector("#card").content.querySelector(".map
 window.card = {
   renderSimilarAds: (template) => {
     const adsItem = adsTemplate.cloneNode(true);
-    adsItem.style = "left: " + (template.location.x + adsItem.style.width) + "px; top: " + (template.location.y + adsItem.style.height) + "px;";
+    adsItem.style = `left: ${(template.location.x + adsItem.style.width)}px; top: ${(template.location.y + adsItem.style.height)}px`;
     const image = adsItem.querySelector("img");
     image.src = template.author.avatar;
     image.alt = template.offer.title;
     return adsItem;
   },
+
+
   renderAds: (template) => {
+    const {offer: {title, address, price, type, rooms, guests, checkin, checkout, features, description, photos}, author: {avatar}} = template;
+
     const card = cardTemplate.cloneNode(true);
     const cardTitle = card.querySelector(".popup__title");
     const cardAddress = card.querySelector(".popup__text--address");
@@ -33,39 +37,39 @@ window.card = {
     const cardPhotos = card.querySelector(".popup__photos");
     const cardImage = cardPhotos.querySelector(".popup__photo");
     const cardAvatar = card.querySelector(".popup__avatar");
-    cardTitle.textContent = template.offer.title;
-    cardAddress.textContent = template.offer.address;
-    cardPrice.textContent = template.offer.price + "₽/ночь";
-    cardType.textContent = TYPE_FLAT_DESCRIPTION[template.offer.type];
-    cardRoom.textContent = template.offer.rooms + " комнаты для " + template.offer.guests + " гостей.";
-    cardTime.textContent = "Заезд после " + template.offer.checkin + ", выезд до " + template.offer.checkout + ".";
+    cardTitle.textContent = title;
+    cardAddress.textContent = address;
+    cardPrice.textContent = `${price}₽/ночь`;
+    cardType.textContent = TYPE_FLAT_DESCRIPTION[type];
+    cardRoom.textContent = `${rooms} комнаты для ${guests} гостей.`;
+    cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}.`;
     cardFeaturesItems.forEach((value) => {
       value.remove();
     });
-    if (template.offer.features.length > 0) {
-      for (let i = 0; i < template.offer.features.length; i++) {
+    if (features.length > 0) {
+      for (let i = 0; i < features.length; i++) {
         let item = document.createElement("li");
         item.classList.add("popup__feature");
-        item.classList.add("popup__feature--" + template.offer.features[i]);
+        item.classList.add(`popup__feature--${features[i]}`);
         cardFeaturesList.appendChild(item);
       }
     }
 
-    cardDescription.textContent = template.offer.description;
-    cardImage.src = template.offer.photos[0];
-    if (template.offer.photos.length > 1) {
-      for (let i = 1; i < template.offer.photos.length; i++) {
+    cardDescription.textContent = description;
+    cardImage.src = photos[0];
+    if (photos.length > 1) {
+      for (let i = 1; i < photos.length; i++) {
         let cardImageTemplate = cardImage.cloneNode(true);
         let imgFragment = document.createDocumentFragment();
-        cardImageTemplate.src = template.offer.photos[i];
+        cardImageTemplate.src = photos[i];
         imgFragment.append(cardImageTemplate);
         cardPhotos.append(imgFragment);
       }
-    } else if (template.offer.photos.length === 0) {
+    } else if (photos.length === 0) {
       cardImage.remove();
     }
 
-    cardAvatar.src = template.author.avatar;
+    cardAvatar.src = avatar;
     card.classList.add("hidden");
     return card;
   }

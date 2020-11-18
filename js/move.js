@@ -2,7 +2,7 @@
 
 const MIN_COORD_Y = 130;
 const MAX_COORD_Y = 630;
-const COORD_TOP_PIN = 0;
+const COORD_TOP_PIN = 80;
 const COORD_BOTTOM_PIN = 700;
 const PIN_ANGLE_HEIGHT = 22;
 const mapPin = document.querySelector(".map__pin--main");
@@ -18,9 +18,9 @@ const limit = {
 window.move = {
   getAddress: (input, element, angleHeight, isTrue) => {
     if (isTrue) {
-      input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight / 2));
+      input.value = `${Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2))}, ${Math.floor((parseInt(element.style.top, 10) + element.offsetHeight / 2))}`;
     } else {
-      input.value = Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2)) + ", " + Math.floor((parseInt(element.style.top, 10) + element.offsetHeight + angleHeight));
+      input.value = `${Math.floor((parseInt(element.style.left, 10) + element.offsetWidth / 2))}, ${Math.floor((parseInt(element.style.top, 10) + element.offsetHeight + angleHeight))}`;
     }
   },
   pin: mapPin,
@@ -51,24 +51,24 @@ window.move.pin.addEventListener("mousedown", (evt) => {
       };
 
       if (moveEvt.clientX < (limit.right + limit.left) && moveEvt.clientX > limit.left) {
-        window.move.pin.style.left = (window.move.pin.offsetLeft - moving.x) + "px";
+        window.move.pin.style.left = `${(window.move.pin.offsetLeft - moving.x)}px`;
       }
 
       if (moveEvt.clientY < COORD_BOTTOM_PIN && moveEvt.clientY > COORD_TOP_PIN) {
-        window.move.pin.style.top = (window.move.pin.offsetTop - moving.y) + "px";
+        window.move.pin.style.top = `${(window.move.pin.offsetTop - moving.y)}px`;
       }
 
 
       if (moveEvt.pageX > (limit.right + limit.left + mapPin.offsetWidth)) {
-        window.move.pin.style.left = limit.right + "px";
+        window.move.pin.style.left = `${limit.right}px`;
       } else if (moveEvt.pageX < limit.left) {
-        window.move.pin.style.left = (limit.left - limit.left - (mapPin.offsetWidth / 2)) + "px";
+        window.move.pin.style.left = `${(limit.left - limit.left - (mapPin.offsetWidth / 2))}px`;
       }
 
       if (moveEvt.pageY > (limit.bottom - PIN_ANGLE_HEIGHT)) {
-        window.move.pin.style.top = (limit.bottom - PIN_ANGLE_HEIGHT) + "px";
+        window.move.pin.style.top = `${(limit.bottom - PIN_ANGLE_HEIGHT)}px`;
       } else if (moveEvt.pageY < (limit.top - mapPin.offsetHeight - PIN_ANGLE_HEIGHT)) {
-        window.move.pin.style.top = (limit.top - mapPin.offsetHeight - PIN_ANGLE_HEIGHT) + "px";
+        window.move.pin.style.top = `${(limit.top - mapPin.offsetHeight - PIN_ANGLE_HEIGHT)}px`;
       }
 
       window.move.getAddress(window.main.address, window.move.pin, window.move.angle, window.main.check);

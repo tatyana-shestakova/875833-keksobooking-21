@@ -25,18 +25,18 @@ const resetButton = document.querySelector(".ad-form__reset");
 let checkFragment;
 
 const checkRooms = () => {
-  if (roomsNumber.value < guestsNumber.value) {
-    roomsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
-    roomsNumber.reportValidity();
+  if (guestsNumber.value > roomsNumber.value && roomsNumber.value !== NOT_GUESTS.ROOMS) {
+    guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
+    guestsNumber.reportValidity();
   } else if (roomsNumber.value === NOT_GUESTS.ROOMS && guestsNumber.value !== NOT_GUESTS.COUNT) {
-    roomsNumber.setCustomValidity("Это помещение не для гостей!");
-    roomsNumber.reportValidity();
+    guestsNumber.setCustomValidity("Это помещение не для гостей!");
+    guestsNumber.reportValidity();
   } else if (guestsNumber.value === NOT_GUESTS.COUNT && roomsNumber.value !== NOT_GUESTS.ROOMS) {
-    roomsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
-    roomsNumber.reportValidity();
+    guestsNumber.setCustomValidity("Выберете помещение с 100 комнатами");
+    guestsNumber.reportValidity();
   } else {
-    roomsNumber.setCustomValidity("");
-    roomsNumber.reportValidity();
+    guestsNumber.setCustomValidity("");
+    guestsNumber.reportValidity();
   }
 };
 
@@ -109,6 +109,9 @@ const renderMessage = (clone) => {
       window.sort.sortFilters.reset();
       evt.preventDefault();
       deleteHandler();
+      window.main.check = true;
+      window.main.addActiveMap();
+      window.image.clearLoadFoto();
     });
   }
 };
@@ -118,6 +121,7 @@ resetButton.addEventListener("click", () => {
   window.sort.sortFilters.reset();
   window.main.check = true;
   window.main.addActiveMap();
+  window.image.clearLoadFoto();
 });
 
 const successHandler = () => {
@@ -126,6 +130,7 @@ const successHandler = () => {
   renderMessage(successTemplate);
   window.main.check = true;
   window.main.addActiveMap();
+  window.image.clearLoadFoto();
 };
 
 const errorHandler = () => {
@@ -135,8 +140,8 @@ const errorHandler = () => {
 window.main.siteForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
   if (guestsNumber.value > roomsNumber.value) {
-    roomsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
-    roomsNumber.reportValidity();
+    guestsNumber.setCustomValidity("Все гости не поместятся! Давайте выберем побольше комнат");
+    guestsNumber.reportValidity();
   } else {
     window.data.save(new FormData(window.main.siteForm), successHandler, errorHandler);
   }

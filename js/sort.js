@@ -20,11 +20,6 @@ const houseRooms = document.querySelector("#housing-rooms");
 const houseGuests = document.querySelector("#housing-guests");
 const houseFeatures = document.querySelector(".map__filters");
 
-
-window.sort = {
-  sortFilters: mapFiltersForm
-};
-
 const getPrice = (element) => {
   if (housePrice.value === PRICES.HOUSE_TYPE.LOW) {
     return element.offer.price < PRICES.HOUSE_CHECK.MIN;
@@ -53,11 +48,14 @@ const changePins = () => {
       return ads.offer.features.includes(pin);
     });
     return isChangedHouse && isChangedPrice && isChangedRoom && isChangedGuests && isChangedFeatures;
-  }).slice(0);
+  }).slice(0, window.map.count);
   window.map.renderNewPin(sameHouses);
 };
 
-window.sort.sortFilters.addEventListener("change", () => {
+mapFiltersForm.addEventListener("change", () => {
   window.debounce.getTimeout(changePins);
 });
 
+window.sort = {
+  sortFilters: mapFiltersForm
+};

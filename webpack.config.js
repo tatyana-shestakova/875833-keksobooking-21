@@ -7,10 +7,10 @@ module.exports = {
     "./js/card.js",
     "./js/map.js",
     "./js/move.js",
+    "./js/image.js",
     "./js/main.js",
     "./js/form.js",
-    "./js/debounce.js",
-    "./js/image.js"
+    "./js/debounce.js"
   ],
   output: {
     filename: "bundle.js",

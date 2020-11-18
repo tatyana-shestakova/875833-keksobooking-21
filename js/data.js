@@ -32,28 +32,28 @@ const loadRequest = (element, success, error) => {
 
   element.timeout = TIMEOUT_IN_MS;
 
-  element.addEventListener('error', () => {
-    error('Произошла ошибка соединения');
+  element.addEventListener("error", () => {
+    error("Произошла ошибка соединения");
   });
-  element.addEventListener('timeout', () => {
-    error('Запрос не успел выполниться за ' + element.timeout + 'мс');
+  element.addEventListener("timeout", () => {
+    error(`Запрос не успел выполниться за ${element.timeout}мc`);
   });
 };
 
 window.data = {
   load: (onLoad, onError) => {
     const xhrData = new XMLHttpRequest();
-    xhrData.responseType = 'json';
+    xhrData.responseType = "json";
     loadRequest(xhrData, onLoad, onError);
-    xhrData.open('GET', URL_DATA);
+    xhrData.open("GET", URL_DATA);
     xhrData.send();
   },
 
   save: (data, onSuccess, onError) => {
     const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
+    xhr.responseType = "json";
     loadRequest(xhr, onSuccess, onError);
-    xhr.open('POST', URL_POST);
+    xhr.open("POST", URL_POST);
     xhr.send(data);
   },
 
