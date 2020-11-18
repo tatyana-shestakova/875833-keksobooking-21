@@ -2,7 +2,8 @@
 
 const MIN_COORD_Y = 130;
 const MAX_COORD_Y = 630;
-const COORD_TOP_PIN = "43.5px";
+const COORD_TOP_PIN = 0;
+const COORD_BOTTOM_PIN = 700;
 const PIN_ANGLE_HEIGHT = 22;
 const mapPin = document.querySelector(".map__pin--main");
 const map = document.querySelector(".map");
@@ -53,7 +54,7 @@ window.move.pin.addEventListener("mousedown", (evt) => {
         window.move.pin.style.left = (window.move.pin.offsetLeft - moving.x) + "px";
       }
 
-      if (moveEvt.clientY < limit.bottom && moveEvt.clientY > limit.top) {
+      if (moveEvt.clientY < COORD_BOTTOM_PIN && moveEvt.clientY > COORD_TOP_PIN) {
         window.move.pin.style.top = (window.move.pin.offsetTop - moving.y) + "px";
       }
 
@@ -64,10 +65,10 @@ window.move.pin.addEventListener("mousedown", (evt) => {
         window.move.pin.style.left = (limit.left - limit.left - (mapPin.offsetWidth / 2)) + "px";
       }
 
-      if (moveEvt.pageY > limit.bottom) {
+      if (moveEvt.pageY > (limit.bottom - PIN_ANGLE_HEIGHT)) {
         window.move.pin.style.top = (limit.bottom - PIN_ANGLE_HEIGHT) + "px";
-      } else if (moveEvt.pageY < limit.top) {
-        window.move.pin.style.top = COORD_TOP_PIN;
+      } else if (moveEvt.pageY < (limit.top - mapPin.offsetHeight - PIN_ANGLE_HEIGHT)) {
+        window.move.pin.style.top = (limit.top - mapPin.offsetHeight - PIN_ANGLE_HEIGHT) + "px";
       }
 
       window.move.getAddress(window.main.address, window.move.pin, window.move.angle, window.main.check);
