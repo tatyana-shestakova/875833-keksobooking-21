@@ -1,103 +1,63 @@
 "use strict";
 
-const mapFilters = document.querySelector(".map__filters");
+const PRICES = {
+  HOUSE_TYPE: {
+    ANY: "any",
+    LOW: "low",
+    MIDDLE: "middle",
+    HIGH: "high"
+  },
+  HOUSE_CHECK: {
+    MIN: 10000,
+    MAX: 50000
+  }
+};
+
+const mapFiltersForm = document.querySelector(".map__filters");
 const houseType = document.querySelector("#housing-type");
 const housePrice = document.querySelector("#housing-price");
 const houseRooms = document.querySelector("#housing-rooms");
 const houseGuests = document.querySelector("#housing-guests");
-const houseFeatures = document.querySelectorAll(".map__checkbox");
+const houseFeatures = document.querySelector(".map__filters");
 
-const getRank = (pin) => {
-  let rank = 0;
-
-  if (pin.offer.type === houseType.value) {
-    rank += 2;
-  }
-
-  if (houseType.value === "any") {
-    rank += 1;
-  }
-
-  if (housePrice.value === "low") {
-    if (pin.offer.price < 10000) {
-      rank += 2;
-    }
-  }
-
-  if (housePrice.value === "middle") {
-    if (pin.offer.price < 50000 && pin.offer.price >= 10000) {
-      rank += 2;
-    }
-  }
-
-  if (housePrice.value === "high") {
-    if (pin.offer.price > 0) {
-      rank += 2;
-    }
-  }
-
-  if (housePrice.value === "any") {
-    if (pin.offer.price > 50000) {
-      rank += 1;
-    }
-  }
-
-  if (pin.offer.rooms === Number(houseRooms.value)) {
-    rank += 2;
-  }
-
-  if (houseRooms.value === "any") {
-    if (pin.offer.rooms < 3 || pin.offer.rooms < 1) {
-      rank += 1;
-    }
-  }
-
-  if (pin.offer.guests === Number(houseGuests.value)) {
-    rank += 2;
-  }
-
-  if (houseGuests.value === "any") {
-    if (pin.offer.guests > 3) {
-      rank += 1;
-    }
-  }
-
-  houseFeatures.forEach((input) => {
-    if (input.checked) {
-      for (let i = 0; i < pin.offer.features.length; i++) {
-        if (pin.offer.features.indexOf(input.value) !== -1) {
-          rank += 1;
-        }
-      }
-    }
-  });
-
-  return rank;
-};
-
-const numberComparator = (left, right) => {
-  if (left > right) {
-    return 1;
-  } else if (left < right) {
-    return -1;
-  } else {
-    return 0;
-  }
-};
 
 window.sort = {
-  changePins: () => {
-    window.map.renderNewPin(window.map.sortedList.sort((left, right) => {
-      let rankDiff = getRank(right) - getRank(left);
-      if (rankDiff === 0) {
-        rankDiff = numberComparator(left, right);
-      }
-      return rankDiff;
-    }));
-  },
-  sortFilters: mapFilters
+  sortFilters: mapFiltersForm
+};
+
+const getPrice = (element) => {
+  if (housePrice.value === PRICES.HOUSE_TYPE.LOW) {
+    return element.offer.price < PRICES.HOUSE_CHECK.MIN;
+  } else if (housePrice.value === PRICES.HOUSE_TYPE.MIDDLE) {
+    return element.offer.price >= PRICES.HOUSE_CHECK.MIN && element.offer.price <= PRICES.HOUSE_CHECK.MAX;
+  } else if (housePrice.value === PRICES.HOUSE_TYPE.HIGH) {
+    return element.offer.price > PRICES.HOUSE_CHECK.MAX;
+  }
+  return element.offer.price > 0;
+};
+
+const getCheckedFeatures = () => {
+  const checkedFeatures = houseFeatures.querySelectorAll("input:checked");
+  return Array.from(checkedFeatures).map((input) => {
+    return input.value;
+  });
+};
+
+const changePins = () => {
+  const sameHouses = window.map.sortedList.filter((ads) => {
+    const isChangedHouse = ads.offer.type === houseType.value || houseType.value === PRICES.HOUSE_TYPE.ANY;
+    const isChangedPrice = getPrice(ads);
+    const isChangedRoom = ads.offer.rooms === Number(houseRooms.value) || houseRooms.value === PRICES.HOUSE_TYPE.ANY;
+    const isChangedGuests = ads.offer.guests === Number(houseGuests.value) || houseGuests.value === PRICES.HOUSE_TYPE.ANY;
+    const isChangedFeatures = getCheckedFeatures().every((pin) => {
+      return ads.offer.features.includes(pin);
+    });
+    return isChangedHouse && isChangedPrice && isChangedRoom && isChangedGuests && isChangedFeatures;
+  }).slice(0);
+  window.map.renderNewPin(sameHouses);
 };
 
 window.sort.sortFilters.addEventListener("change", () => {
-  window.debounce.getTimeout(window.sort.changePins);
+  window.debounce.getTimeout(changePins);
 });
+

@@ -10,6 +10,8 @@ const RESPONSE_STATUS = {
   NOT_FOUND: 404
 };
 
+const TIMEOUT_IN_MS = 10000;
+
 const ERRORS_MESSAGE = {
   [RESPONSE_STATUS.BAD_REQUEST]: "Что-то пошло не так... Неверный запрос",
   [RESPONSE_STATUS.UNAUTHORIZED]: "Что-то пошло не так... Пользователь не авторизован",
@@ -18,30 +20,31 @@ const ERRORS_MESSAGE = {
 
 const similarAdsList = document.querySelector(".map__pins");
 
-const TIMEOUT_IN_MS = 10000;
+const loadRequest = (element, success, error) => {
+  element.addEventListener('load', () => {
+
+    if (element.status === RESPONSE_STATUS.OK) {
+      success(element.response);
+    } else {
+      error(ERRORS_MESSAGE[element.status]);
+    }
+  });
+
+  element.timeout = TIMEOUT_IN_MS;
+
+  element.addEventListener('error', () => {
+    error('Произошла ошибка соединения');
+  });
+  element.addEventListener('timeout', () => {
+    error('Запрос не успел выполниться за ' + element.timeout + 'мс');
+  });
+};
 
 window.data = {
   load: (onLoad, onError) => {
     const xhrData = new XMLHttpRequest();
     xhrData.responseType = 'json';
-
-    xhrData.addEventListener('load', () => {
-
-      if (xhrData.status === RESPONSE_STATUS.OK) {
-        onLoad(xhrData.response);
-      } else {
-        onError(ERRORS_MESSAGE[xhrData.status]);
-      }
-    });
-    xhrData.timeout = TIMEOUT_IN_MS;
-
-    xhrData.addEventListener('error', () => {
-      onError('Произошла ошибка соединения');
-    });
-    xhrData.addEventListener('timeout', () => {
-      onError('Запрос не успел выполниться за ' + xhrData.timeout + 'мс');
-    });
-
+    loadRequest(xhrData, onLoad, onError);
     xhrData.open('GET', URL_DATA);
     xhrData.send();
   },
@@ -49,23 +52,7 @@ window.data = {
   save: (data, onSuccess, onError) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-
-    xhr.addEventListener('load', () => {
-      if (xhr.status === RESPONSE_STATUS.OK) {
-        onSuccess(xhr.response);
-      } else {
-        onError(ERRORS_MESSAGE[xhr.status]);
-      }
-    });
-    xhr.timeout = 10000;
-
-    xhr.addEventListener('error', () => {
-      onError('Произошла ошибка соединения');
-    });
-    xhr.addEventListener('timeout', () => {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    });
-
+    loadRequest(xhr, onSuccess, onError);
     xhr.open('POST', URL_POST);
     xhr.send(data);
   },

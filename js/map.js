@@ -3,9 +3,10 @@
 const COUNT_PINS = 5;
 const similarCardList = document.querySelector(".map");
 const filtersContainer = document.querySelector(".map__filters-container");
-let sortedPins = [];
+const sortedPins = [];
 
-let change;
+let changeCard;
+let changePin;
 
 window.map = {
   sortedList: sortedPins,
@@ -32,15 +33,17 @@ window.map = {
     const closePopups = document.querySelectorAll(".popup__close");
     allPopups.forEach((value, index) => {
       allPins[index].addEventListener("click", () => {
-        change = value;
-        hiddenAllPopups(allPopups);
+        hiddenPopup(allPopups, allPins);
+        changeCard = value;
+        changePin = allPins[index];
         openPopup();
       });
 
       allPins[index].addEventListener("keydown", (evt) => {
-        if (evt.keyCode === 13) {
-          change = value;
-          hiddenAllPopups(allPopups);
+        if (evt.keyCode === window.map.ENTER_KEYCODE) {
+          hiddenPopup(allPopups, allPins);
+          changeCard = value;
+          changePin = allPins[index];
           openPopup();
         }
       });
@@ -55,7 +58,7 @@ window.map = {
     });
   },
   getElements: (selector) => {
-    let elements = document.querySelectorAll(selector);
+    const elements = document.querySelectorAll(selector);
     return elements;
   },
   clearElement: (element) => {
@@ -66,9 +69,9 @@ window.map = {
   renderNewPin: (pins) => {
     window.map.clearElement(window.map.getElements(".map__pin:not(.map__pin--main)"));
     window.map.clearElement(window.map.getElements(".popup"));
-    let adsFragment = document.createDocumentFragment();
-    let cardFragment = document.createDocumentFragment();
-    const takeNumber = pins.length > COUNT_PINS ? COUNT_PINS : pins.length;
+    const adsFragment = document.createDocumentFragment();
+    const cardFragment = document.createDocumentFragment();
+    const takeNumber = COUNT_PINS > pins.length ? pins.length : COUNT_PINS;
 
     for (let j = 0; j < takeNumber; j++) {
       adsFragment.appendChild(window.card.renderSimilarAds(pins[j]));
@@ -82,11 +85,11 @@ window.map = {
 
 const loadHandler = (data) => {
   window.map.sortedList = data;
-  window.sort.changePins();
+  window.map.renderNewPin(window.map.sortedList);
 };
 
 const ErrorHandler = (errorMessage) => {
-  let node = document.createElement("div");
+  const node = document.createElement("div");
   node.style = "z-index: 100; margin: 0 auto; text-align: center; background-color: white; border: 1px red solid; width: 100%; height: 40px;";
   node.style.position = "absolute";
   node.style.left = 0;
@@ -101,18 +104,23 @@ const escKeydownHandler = (evt) => {
 };
 
 const openPopup = () => {
-  change.classList.remove("hidden");
+  changeCard.classList.remove("hidden");
+  changePin.classList.add("map__pin--active");
   document.addEventListener("keydown", escKeydownHandler);
 };
 
 const closePopup = () => {
-  change.classList.add("hidden");
+  changeCard.classList.add("hidden");
+  changePin.classList.remove("map__pin--active");
   document.removeEventListener("keydown", escKeydownHandler);
 };
 
-const hiddenAllPopups = (popups) => {
-  for (let popup of popups) {
-    popup.classList.add("hidden");
-  }
+const hiddenPopup = (popups, pins) => {
+  popups.forEach((opened, count) => {
+    if (!opened.classList.contains("hidden")) {
+      opened.classList.add("hidden");
+      pins[count].classList.remove("map__pin--active");
+    }
+  });
 };
 
